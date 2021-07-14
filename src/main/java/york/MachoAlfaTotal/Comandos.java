@@ -51,7 +51,7 @@ public class Comandos extends ListenerAdapter {
 		
 		String mensajeCompleto = e.getMessage().getContentRaw();
 		
-		mensajeCompleto.toLowerCase();
+		mensajeCompleto = mensajeCompleto.toLowerCase();
 		mensajeCompleto.replace('á', 'a');
 		mensajeCompleto.replace('é', 'e');
 		mensajeCompleto.replace('í', 'i');
@@ -168,37 +168,41 @@ public class Comandos extends ListenerAdapter {
 	
 			AudioSourceManagers.registerRemoteSources(playerManager);
 			manager.setSendingHandler(new AudioPlayerSendHandler(audioPlayer));
-			manager.openAudioConnection(channel);
-			
-			String trackUrl = "https://youtu.be/6peMik4tpLA";
-			
-			playerManager.loadItem(trackUrl, new AudioLoadResultHandler() {
-				@Override
-				public void trackLoaded(AudioTrack track) {
-					trackScheduler.queue(track);
-				}
-				@Override
-				public void playlistLoaded(AudioPlaylist playlist) {
-					
-				}
-				@Override
-				public void noMatches() {
-					
-				}
-				@Override
-				public void loadFailed(FriendlyException exception) {
-					
-				}
-			});
-			
-			
-			
+			try {
+				manager.openAudioConnection(channel);
+				
+				String trackUrl = "https://youtu.be/6peMik4tpLA";
+				
+				playerManager.loadItem(trackUrl, new AudioLoadResultHandler() {
+					@Override
+					public void trackLoaded(AudioTrack track) {
+						trackScheduler.queue(track);
+					}
+					@Override
+					public void playlistLoaded(AudioPlaylist playlist) {
+						
+					}
+					@Override
+					public void noMatches() {
+						
+					}
+					@Override
+					public void loadFailed(FriendlyException exception) {
+						
+					}
+				});
+			} catch (IllegalArgumentException e3) {
+				e.getChannel().sendMessage("Tienes que conectarte a un canal de voz para usar ese comando").queue();
+			}
 			
 		} else if (mensajeCompleto.equalsIgnoreCase(MachoAlfaTotal.prefijo + "machoBeta")) {
 			
 			manager.closeAudioConnection();
 			
-		} else {
+		} 
+		
+		
+		else {
 					
 		//Declaración de las frases de macho alfa total
 		final String[] frase0 = (MachoAlfaTotal.prefijo+"QUE CALLATE").split(" ");
@@ -451,6 +455,17 @@ public class Comandos extends ListenerAdapter {
 		if (!respuestaDef.isEmpty()) {
 			e.getChannel().sendMessage(respuestaDef).queue();
 			return;
+		}
+		
+		boolean todoA = true;
+		for (int x=1; x<=mensajeCompleto.length()-1; x++) {
+			if (mensajeCompleto.charAt(x)!='a') {
+				todoA=false;
+			}
+		}
+		
+		if (todoA) {
+			e.getChannel().sendMessage("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHHHHH").queue();
 		}
 	}
 		
