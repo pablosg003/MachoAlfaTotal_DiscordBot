@@ -60,6 +60,7 @@ public class PlayerManager {
 		});
 	}
 	
+	@SuppressWarnings("unused")
 	private static PlayerManager getInstance() {
 		
 		if (INSTANCE==null) {

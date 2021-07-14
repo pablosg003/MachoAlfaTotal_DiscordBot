@@ -3,11 +3,17 @@ package york.MachoAlfaTotal;
 import java.awt.Color;
 import java.util.Random;
 
+import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
+import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
+import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
+import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
+import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 
 import lavaplayer.AudioPlayerSendHandler;
+import lavaplayer.TrackScheduler;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.VoiceChannel;
@@ -157,8 +163,35 @@ public class Comandos extends ListenerAdapter {
 			audioPlayer= playerManager.createPlayer();
 			channel = e.getMember().getVoiceState().getChannel();
 			
+			TrackScheduler trackScheduler = new TrackScheduler(audioPlayer);
+			audioPlayer.addListener(trackScheduler);
+	
+			AudioSourceManagers.registerRemoteSources(playerManager);
 			manager.setSendingHandler(new AudioPlayerSendHandler(audioPlayer));
 			manager.openAudioConnection(channel);
+			
+			String trackUrl = "https://youtu.be/6peMik4tpLA";
+			
+			playerManager.loadItem(trackUrl, new AudioLoadResultHandler() {
+				@Override
+				public void trackLoaded(AudioTrack track) {
+					trackScheduler.queue(track);
+				}
+				@Override
+				public void playlistLoaded(AudioPlaylist playlist) {
+					
+				}
+				@Override
+				public void noMatches() {
+					
+				}
+				@Override
+				public void loadFailed(FriendlyException exception) {
+					
+				}
+			});
+			
+			
 			
 			
 		} else if (mensajeCompleto.equalsIgnoreCase(MachoAlfaTotal.prefijo + "machoBeta")) {
